@@ -12,7 +12,7 @@ class Utils extends AddonModule {
 
     public async createBackupItem() {
         // Search the exsiting Backup Item.
-        var s = new Zotero.Search();
+        var s = new this._Addon._Zotero.Search();
         s.addCondition('title', 'is', 'Tara_Backup');
         var itemID = await s.search();
         if (itemID.length) {
