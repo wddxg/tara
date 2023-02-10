@@ -11,13 +11,16 @@ class Utils extends AddonModule {
     }
 
     public async createBackupItem() {
-        // Create Docuement Item for store backup zip file.
-        if (
-            this._Addon._Zotero.Prefs.get("tara.itemID") == undefined ||
-            !this._Addon._Zotero.Items.get(
-                this._Addon._Zotero.Prefs.get("tara.itemID")
-            )
-        ) {
+        // Search the exsiting Backup Item.
+        var s = new Zotero.Search();
+        s.addCondition('title', 'is', 'Tara_Backup');
+        var itemID = await s.search();
+        if (itemID.length) {
+            // Use the first item returned.
+            this._Addon._Zotero.Prefs.set("tara.itemID", itemID[0]);
+        }
+        else {
+            // Create Docuement Item for store backup zip file.
             let item = new this._Addon._Zotero.Item("document");
             item.setField("title", "Tara_Backup");
             let itemID = await item.saveTx();
