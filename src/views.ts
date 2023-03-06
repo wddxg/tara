@@ -25,11 +25,13 @@ class AddonViews extends AddonModule {
         var menupopup = _window.document.createElement("menupopup");
         var create_menu = _window.document.createElement("menuitem");
         var export_menu = _window.document.createElement("menuitem");
+        var import_menu = _window.document.createElement("menuitem");
         var restore_menu = _window.document.createElement("menuitem");
         var pref_menu = _window.document.createElement("menuitem");
 
         const createLabel = this._Addon.locale.getString("toolbar.create");
         const exportLabel = this._Addon.locale.getString("toolbar.export");
+        const importLabel = this._Addon.locale.getString("toolbar.import");
         const restoreLabel = this._Addon.locale.getString("toolbar.restore");
         const prefLabel = this._Addon.locale.getString("tool.preference");
          
@@ -45,6 +47,15 @@ class AddonViews extends AddonModule {
             "oncommand",
             "Zotero.Tara.utils.createBackupAsAttachment();"
         );
+
+        import_menu.setAttribute("id", "zotero-tb-tara-import-backup");
+        import_menu.setAttribute("label", importLabel);
+        import_menu.setAttribute("class", "menuitem-iconic");
+        import_menu.setAttribute(
+            "style",
+            "list-style-image: url('chrome://tara/skin/import_icon.png');"
+        );
+        import_menu.setAttribute("oncommand", "Zotero.Tara.utils.importFromBackup();");
 
         export_menu.setAttribute("id", "zotero-tb-tara-export-backup");
         export_menu.setAttribute("label", exportLabel);
@@ -80,6 +91,7 @@ class AddonViews extends AddonModule {
         );
 
         menupopup.appendChild(create_menu);
+        menupopup.appendChild(import_menu);
         menupopup.appendChild(export_menu);
         menupopup.appendChild(restore_menu);
         menupopup.appendChild(pref_menu);

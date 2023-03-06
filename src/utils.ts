@@ -331,6 +331,19 @@ class Utils extends AddonModule {
         zipReader.close();
     }
 
+    public async importFromBackup() {
+        // Import from an export backup zip
+        if (!this._Addon._Zotero.Prefs.get("tara.itemID")) {
+            await this.createBackupItem();
+        }
+        let backupItemID = this._Addon._Zotero.Prefs.get("tara.itemID");
+        let zoteroPane = this._Addon._Zotero.getActiveZoteroPane();
+        await zoteroPane.addAttachmentFromDialog(false, backupItemID);
+        let attachmentID = this._Addon._Zotero.Items.get(backupItemID).getAttachments()[0];
+        let attachment = this._Addon._Zotero.Items.get(attachmentID);
+        this.restoreFromFile(attachment);
+    }
+
     public async restoreFromBackup() {
         let backupItemID = this._Addon._Zotero.Prefs.get("tara.itemID");
         var io = {
@@ -356,15 +369,11 @@ class Utils extends AddonModule {
             // No item selected
             if (!io["attachment"]) return;
             attachment = this._Addon._Zotero.Items.get(files[io["attachment"]]);
-        } else { // Inport from an export backup zip
-            await this.createBackupItem();
-            backupItemID = this._Addon._Zotero.Prefs.get("tara.itemID");
-            let zoteroPane = this._Addon._Zotero.getActiveZoteroPane();
-            await zoteroPane.addAttachmentFromDialog(false, backupItemID);
-            let attachmentID = this._Addon._Zotero.Items.get(backupItemID).getAttachments()[0];
-            attachment = this._Addon._Zotero.Items.get(attachmentID);
-        }
-        
+        } 
+        this.restoreFromFile(attachment);
+    }
+
+    public async restoreFromFile(attachment: _ZoteroItem) {
         let cacheTmp = this._Addon._Zotero.getTempDirectory();
         cacheTmp.append("Backup");
         if (cacheTmp.exists()) {
